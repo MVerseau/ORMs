@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<h1 style="text-align:center;">  {{ head }} </h1>
+
+
+<body>
+{% for k, v in data.items %}
+    <p>{{k}}: {{v}}
+{%endfor%}
+<table border="1" style="border:1px solid black; margin-left:auto;margin-right:auto;">
+    <tr>
+        <td> <b>SQL-запрос </b> </td>
+        <td><b>Django ORM</b></td>
+        <td><b>SQLAlchemy</b></td>
+        <td><b>Tortoise ORM</b></td>
+        <td><b>Самый быстрый</b></td>
+
+
+    </tr>
+    {% for key, values in data.items %}
+    <tr>
+        <td>{{key}}</td>
+        {% for v in values %}
+            {%if v|is_string %}
+                <td>{{v}}</td>
+            {% else %}
+                <td>{{v|floatformat:4}} сек.</td>
+            {%endif%}
+
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>
