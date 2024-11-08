@@ -54,7 +54,7 @@
     {% for key, values in data.items %}
     <tr>
         <td>{{key}}</td>
-        {% for v in values %}
+        {% for v in values|slice:":-1" %}
             {%if v.1|is_string %}
                 <td>{{v}}</td>
             {% else %}
@@ -78,7 +78,7 @@
     {% for key, values in data.items %}
     <tr>
         <td>{{key}}</td>
-        {% for v in values %}
+        {% for v in values|slice:":-1" %}
             {%if v.2|is_string %}
                 <td>{{v}}</td>
             {% else %}

@@ -41,7 +41,7 @@ def results(request, iter=100):
                 data[key][i][j] /= iter
         timing = list(zip(value[0], value[1], value[2]))[0]
         # data[key].append(['Django ORM', 'SQLAlchemy', 'Tortoise ORM'][data[key][0].index(min(data.get(key)[0]))])
-        data[key][0].append(['Django ORM', 'SQLAlchemy', 'Tortoise ORM'][timing.index(min(timing))])
+        data[key].append(['Django ORM', 'SQLAlchemy', 'Tortoise ORM'][timing.index(min(timing))])
 
     context = {
         'title': title,
