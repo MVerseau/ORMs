@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +12,8 @@
 {% for k, v in data.items %}
     <p>{{k}}: {{v}}
 {%endfor%}
+
+<h2 style="text-align:center;">Суммарное время, затраченное на запрос</h2>
 <table border="1" style="border:1px solid black; margin-left:auto;margin-right:auto;">
     <tr>
         <td> <b>SQL-запрос </b> </td>
@@ -25,16 +28,69 @@
     <tr>
         <td>{{key}}</td>
         {% for v in values %}
-            {%if v|is_string %}
+            {%if v.0|is_string %}
                 <td>{{v}}</td>
             {% else %}
-                <td>{{v|floatformat:4}} сек.</td>
+                <td>{{v.0|floatformat:4}} сек.</td>
             {%endif%}
 
+
+        {% endfor %}
+    </tr>
+
+    {% endfor %}
+</table>
+<h2 style="text-align:center;">Загрузка ЦПУ</h2>
+<table border="1" style="border:1px solid black; margin-left:auto;margin-right:auto;">
+    <tr>
+        <td> <b>SQL-запрос </b> </td>
+        <td><b>Django ORM</b></td>
+        <td><b>SQLAlchemy</b></td>
+        <td><b>Tortoise ORM</b></td>
+
+
+
+    </tr>
+    {% for key, values in data.items %}
+    <tr>
+        <td>{{key}}</td>
+        {% for v in values %}
+            {%if v.1|is_string %}
+                <td>{{v}}</td>
+            {% else %}
+                <td>{{v.1|floatformat:4}} %</td>
+            {%endif%}
+
+
+        {% endfor %}
+    </tr>
+
+    {% endfor %}
+</table>
+<h2 style="text-align:center;">Использование ОЗУ</h2>
+<table border="1" style="border:1px solid black; margin-left:auto;margin-right:auto;">
+    <tr>
+        <td> <b>SQL-запрос </b> </td>
+        <td><b>Django ORM</b></td>
+        <td><b>SQLAlchemy</b></td>
+        <td><b>Tortoise ORM</b></td>
+    </tr>
+    {% for key, values in data.items %}
+    <tr>
+        <td>{{key}}</td>
+        {% for v in values %}
+            {%if v.2|is_string %}
+                <td>{{v}}</td>
+            {% else %}
+                <td>{{v.2|floatformat:4}} %</td>
+            {%endif%}
         {% endfor %}
     </tr>
     {% endfor %}
 </table>
-
+<p>
+            <form method="get">
+                <input type="submit" style="display: block; margin:0 auto;" value="Обновить">
+            </form>
 </body>
 </html>
