@@ -1,16 +1,16 @@
 import os
 import time
 import random
-
-import psutil
 from sqlalchemy import create_engine
 from .models_SQLAlchemy import *
 from sqlalchemy import func
 from sqlalchemy.orm import Session
-from .utils import ps_utils
+from .utils import ps_utils#,#file
 
 
-def sql_alchem(data: dict):
+
+def sql_alchem(data: dict,i):
+    # file.write(f'iter {i}: ')
     engine = create_engine(r'sqlite:///db.sqlite3', echo=True)
     with Session(autoflush=False, bind=engine) as db:
         rez = a_query_get_record_found(db, True)
@@ -47,53 +47,47 @@ def sql_alchem(data: dict):
 @ps_utils
 def a_query_get_record_found(db: Session, find_yes: bool):
     start = time.time()
-    # p = psutil.Process(os.getpid())
     if find_yes:
         db.query(A_Buyer).filter(A_Buyer.name == 'buyer50').first()
     else:
         db.query(A_Buyer).filter(A_Buyer.name == 'buyer101').first()
 
     end = time.time()
-    return end - start#, p.cpu_percent(), p.memory_percent()
+    return end - start
 
 @ps_utils
 def al_group_by(db: Session):
     start = time.time()
-    # p = psutil.Process(os.getpid())
     db.query(A_Buyer.age, func.count(A_Buyer.age)).group_by(A_Buyer.age)
 
     end = time.time()
-    return end - start#, p.cpu_percent(), p.memory_percent()
+    return end - start
 
 @ps_utils
 def a_sort(db: Session):
     start = time.time()
-    # p = psutil.Process(os.getpid())
     db.query(A_Buyer).order_by(A_Buyer.balance).all()
     end = time.time()
-    return end - start#, p.cpu_percent(), p.memory_percent()
+    return end - start
 
 @ps_utils
 def a_filter(db: Session):
     start = time.time()
-    # p = psutil.Process(os.getpid())
     db.query(A_Buyer, func.count(A_Buyer.age)).filter(A_Buyer.age == random.randint(0, 100)).all()
     end = time.time()
-    return end - start#, p.cpu_percent(), p.memory_percent()
+    return end - start
 
 @ps_utils
 def a_join(db: Session):
     start = time.time()
-    # p = psutil.Process(os.getpid())
     db.query(A_Buyer).filter(A_Buyer.name == A_Game.buyer).all()
-
     end = time.time()
-    return end - start#, p.cpu_percent(), p.memory_percent()
+    # file.write(f'{end-start=}\n')
+    return end - start
 
 @ps_utils
 def a_add_record(db: Session):
     start = time.time()
-    # p = psutil.Process(os.getpid())
     new_record = A_Buyer(
         name="test A",
         balance=1000,
@@ -102,7 +96,7 @@ def a_add_record(db: Session):
     db.add(new_record)
     db.commit()
     end = time.time()
-    return end - start#, p.cpu_percent(), p.memory_percent()
+    return end - start
 
 @ps_utils
 def a_update_records(db: Session):

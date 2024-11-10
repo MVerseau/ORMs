@@ -1,20 +1,17 @@
-import os
 import random
-import psutil
-
+import time
 import asyncio
 from django.db.models import Count
 from django.shortcuts import render
-# import time
 from django.db import connection
 from .models import *
-from .views_SQLA import *
 from .views_SQLA import sql_alchem
 from .views_Tortoise import tortoise_main
-from .utils import ps_utils
+from .utils import ps_utils, iter  # , file
 
 
-def results(request, iter=100):
+def results(request, iter=iter):
+    # file.truncate()
     title = "Сравнение библиотек ORM"
     head = "Сравнительная таблица"
     data = {'SELECT buyer50 FROM Buyer': [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
@@ -31,24 +28,24 @@ def results(request, iter=100):
 
     for i in range(iter):
         data = calculation_of_indicators(data, perf).copy()
-        data = sql_alchem(data).copy()
-        data = asyncio.run(tortoise_main(data))
+        data = sql_alchem(data, i).copy()
+        data = asyncio.run(tortoise_main(data)).copy()
 
     for key, value in data.items():
-        for i in range(len(data[key])):
+        for i in range(len(data[key])):  #
             for j in range(1, len(data[key][i])):
-                print(f'{data[key][i][j]=}')
+                if j == 2:
+                    data[key][i][j] /= 1
                 data[key][i][j] /= iter
         timing = list(zip(value[0], value[1], value[2]))[0]
-        # data[key].append(['Django ORM', 'SQLAlchemy', 'Tortoise ORM'][data[key][0].index(min(data.get(key)[0]))])
         data[key].append(['Django ORM', 'SQLAlchemy', 'Tortoise ORM'][timing.index(min(timing))])
 
     context = {
         'title': title,
         'head': head,
         'data': data,
-
     }
+    # file.close()
     return render(request, 'results.html', context)
 
 
@@ -116,9 +113,7 @@ class Dj():
                 description=f'description of game{i}',
                 age_limited=[True, False][random.randint(0, 1)],
                 buyer=Buyer.objects.get(id=random.randint(1, 100)).name
-
             )
-
         end = time.time()
         return f"{(end - start):.3f} сек."
 
@@ -130,7 +125,7 @@ class Dj():
         else:
             Buyer.objects.filter(name='buyer101')
         end = time.time()
-        return end - start  # , p.cpu_percent(), p.memory_percent()
+        return end - start
 
     @ps_utils
     def group_by(self):
@@ -142,7 +137,6 @@ class Dj():
     @ps_utils
     def sorting(self):
         start = time.time()
-        # p = psutil.Process(os.getpid())
         Buyer.objects.all().order_by('balance')
         end = time.time()
         return end - start
@@ -150,32 +144,28 @@ class Dj():
     @ps_utils
     def count_elems(self):
         start = time.time()
-        # p = psutil.Process(os.getpid())
         Buyer.objects.all().filter(age=random.randint(0, 100)).aggregate(Count('age'))
         end = time.time()
-        return end - start  # , p.cpu_percent(), p.memory_percent()
+        return end - start
 
     @ps_utils
     def add_record(self):
         start = time.time()
-        # p = psutil.Process(os.getpid())
         new_record = Buyer.objects.create(name="test DJ", balance=1000, age=101)
         new_record.save()
         end = time.time()
-        return end - start  # , p.cpu_percent(), p.memory_percent()
+        return end - start
 
     @ps_utils
     def del_all_data(self):
         start = time.time()
-        # p = psutil.Process(os.getpid())
         Buyer.objects.filter(name__contains='DJ').delete()
         end = time.time()
-        return end - start  # , p.cpu_percent(), p.memory_percent()
+        return end - start
 
     @ps_utils
     def joining(self):
         start = time.time()
-        # p = psutil.Process(os.getpid())
         with connection.cursor() as cursor:
             cursor.execute("""
                     Select sole_game.title, sole_buyer.name from sole_game JOIN sole_buyer ON
@@ -183,14 +173,12 @@ class Dj():
                 """)
 
         end = time.time()
-        return end - start  # , p.cpu_percent(), p.memory_percent()
+        return end - start
 
     @ps_utils
     def update_records(self):
         start = time.time()
-        # p = psutil.Process(os.getpid())
         query_for_filter = Buyer.objects.filter(name='test DJ')
         query_for_filter.update(name=('test DJ') + ' Updated')
         end = time.time()
-        return end - start  # , p.cpu_percent(), p.memory_percent()
-
+        return end - start
