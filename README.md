@@ -33,5 +33,8 @@
 Визуализация результатов выполнения программы реализована на базе HTML шаблона.
 ![Скорость обработки запросов](https://github.com/MVerseau/ORMs/blob/f28042b01ffe915c1b1aeade43069f96cda58331/time.jpg)
 ![Загрузка ЦПУ](https://github.com/MVerseau/ORMs/blob/f28042b01ffe915c1b1aeade43069f96cda58331/CPU.jpg)
+
+Для корректного подсчёта в коде программе в модуле utils.py нужно поменять значение cpu_interval на минимум 0,1 сек. Если это значение оставить на 0, то программа покажет нулевую загрузку ЦПУ в полном соответствии с [документацией](https://psutil.readthedocs.io/en/latest/index.html#psutil.Process.cpu_percent).
+
 ![ОЗУ](https://github.com/MVerseau/ORMs/blob/f28042b01ffe915c1b1aeade43069f96cda58331/RAM.jpg)
 
