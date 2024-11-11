@@ -27,7 +27,7 @@ def results(request, iter=iter):
     perf = Dj()
 
     for i in range(iter):
-        data = calculation_of_indicators(data, perf).copy()
+        data = dj_collect_data(data, perf).copy()
         data = sql_alchem(data, i).copy()
         data = asyncio.run(tortoise_main(data)).copy()
 
@@ -35,7 +35,7 @@ def results(request, iter=iter):
         for i in range(len(data[key])):  #
             for j in range(1, len(data[key][i])):
                 if j == 2:
-                    data[key][i][j] /= 1
+                    data[key][i][j] /= 1024
                 data[key][i][j] /= iter
         timing = list(zip(value[0], value[1], value[2]))[0]
         data[key].append(['Django ORM', 'SQLAlchemy', 'Tortoise ORM'][timing.index(min(timing))])
@@ -49,7 +49,7 @@ def results(request, iter=iter):
     return render(request, 'results.html', context)
 
 
-def calculation_of_indicators(data: dict, perf):
+def dj_collect_data(data: dict, perf):
     rez = perf.query_get_record_found(True)
     for i in range(len(rez)):
         data['SELECT buyer50 FROM Buyer'][0][i] += rez[i]
