@@ -31,7 +31,7 @@ def results(request, iter=iter):
         data = sql_alchem(data, i).copy()
         data = asyncio.run(tortoise_main(data)).copy()
 
-data = adjustment(data)
+    data = adjustment(data)
 
     context = {
         'title': title,
