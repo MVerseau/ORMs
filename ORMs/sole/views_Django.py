@@ -140,4 +140,5 @@ class Dj():
         end = time.time()
         return end - start
 
-perf=Dj()
+
+perf = Dj()
