@@ -29,3 +29,14 @@ def ps_utils(func):
         #     print("\n" * 10)
         return result, process.cpu_percent(interval=cpu_interval), mem_after - mem_before
     return wrapper
+
+def adjustment(data: dict):
+    for key, value in data.items():
+        for i in range(len(data[key])):
+            for j in range(1, len(data[key][i])):
+                if j == 2:
+                    data[key][i][j] /= 1024
+                data[key][i][j] /= iter
+        timing = list(zip(value[0], value[1], value[2]))[0]
+        data[key].append(['Django ORM', 'SQLAlchemy', 'Tortoise ORM'][timing.index(min(timing))])
+    return data
