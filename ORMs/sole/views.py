@@ -31,14 +31,7 @@ def results(request, iter=iter):
         data = sql_alchem(data, i).copy()
         data = asyncio.run(tortoise_main(data)).copy()
 
-    for key, value in data.items():
-        for i in range(len(data[key])):  #
-            for j in range(1, len(data[key][i])):
-                if j == 2:
-                    data[key][i][j] /= 1024
-                data[key][i][j] /= iter
-        timing = list(zip(value[0], value[1], value[2]))[0]
-        data[key].append(['Django ORM', 'SQLAlchemy', 'Tortoise ORM'][timing.index(min(timing))])
+data = adjustment(data)
 
     context = {
         'title': title,
