@@ -3,7 +3,7 @@ import os
 import psutil
 import contextlib
 
-cpu_interval = 0.1
+cpu_interval = 0
 iter = 100
 filename = 'text.csv'
 # file = open(filename, 'w', encoding='utf-8')
